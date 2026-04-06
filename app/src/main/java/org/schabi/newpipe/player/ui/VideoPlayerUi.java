@@ -215,6 +215,8 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
 
         binding.repeatButton.setOnClickListener(v -> onRepeatClicked());
         binding.shuffleButton.setOnClickListener(v -> onShuffleClicked());
+        binding.repeatButtonFullscreen.setOnClickListener(v -> onRepeatClicked());
+        binding.shuffleButtonFullscreen.setOnClickListener(v -> onShuffleClicked());
 
         binding.playPauseButton.setOnClickListener(makeOnClickListener(player::playPause));
         binding.playPreviousButton.setOnClickListener(makeOnClickListener(player::playPrevious));
@@ -291,6 +293,8 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
 
         binding.repeatButton.setOnClickListener(null);
         binding.shuffleButton.setOnClickListener(null);
+        binding.repeatButtonFullscreen.setOnClickListener(null);
+        binding.shuffleButtonFullscreen.setOnClickListener(null);
 
         binding.playPauseButton.setOnClickListener(null);
         binding.playPreviousButton.setOnClickListener(null);
@@ -954,11 +958,17 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
         if (repeatMode == REPEAT_MODE_ALL) {
             binding.repeatButton.setImageResource(
                     com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_all);
+            binding.repeatButtonFullscreen.setImageResource(
+                    com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_all);
         } else if (repeatMode == REPEAT_MODE_ONE) {
             binding.repeatButton.setImageResource(
                     com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_one);
+            binding.repeatButtonFullscreen.setImageResource(
+                    com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_one);
         } else /* repeatMode == REPEAT_MODE_OFF */ {
             binding.repeatButton.setImageResource(
+                    com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_off);
+            binding.repeatButtonFullscreen.setImageResource(
                     com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_off);
         }
     }
@@ -982,6 +992,7 @@ public abstract class VideoPlayerUi extends PlayerUi implements SeekBar.OnSeekBa
 
     private void setShuffleButton(final boolean shuffled) {
         binding.shuffleButton.setImageAlpha(shuffled ? 255 : 77);
+        binding.shuffleButtonFullscreen.setImageAlpha(shuffled ? 255 : 77);
     }
     //endregion
 

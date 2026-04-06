@@ -296,6 +296,10 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
 
         binding.metadataView.setVisibility(isFullscreen ? View.VISIBLE : View.GONE);
 
+        // Show repeat and shuffle buttons only in fullscreen mode
+        binding.repeatButtonFullscreen.setVisibility(isFullscreen ? View.VISIBLE : View.GONE);
+        binding.shuffleButtonFullscreen.setVisibility(isFullscreen ? View.VISIBLE : View.GONE);
+
         // Reset workaround changes from popup player
         binding.audioTrackTextView.setMaxWidth(Integer.MAX_VALUE);
     }
@@ -934,6 +938,11 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
 
         binding.metadataView.setVisibility(isFullscreen ? View.VISIBLE : View.GONE);
         binding.playerCloseButton.setVisibility(isFullscreen ? View.GONE : View.VISIBLE);
+        
+        // Update fullscreen buttons visibility
+        binding.repeatButtonFullscreen.setVisibility(isFullscreen ? View.VISIBLE : View.GONE);
+        binding.shuffleButtonFullscreen.setVisibility(isFullscreen ? View.VISIBLE : View.GONE);
+        
         setupScreenRotationButton();
     }
 

@@ -98,6 +98,7 @@ import org.schabi.newpipe.local.history.HistoryRecordManager;
 import org.schabi.newpipe.player.event.PlayerEventListener;
 import org.schabi.newpipe.player.event.PlayerServiceEventListener;
 import org.schabi.newpipe.player.helper.AudioReactor;
+import org.schabi.newpipe.player.helper.AudioVideoSyncHelper;
 import org.schabi.newpipe.player.helper.CustomRenderersFactory;
 import org.schabi.newpipe.player.helper.LoadController;
 import org.schabi.newpipe.player.helper.PlayerDataSource;
@@ -2363,6 +2364,29 @@ public final class Player implements PlaybackListener, Listener {
         videoResolver.setAudioTrack(audioTrackId);
         audioResolver.setAudioTrack(audioTrackId);
         reloadPlayQueueManager();
+    }
+
+    /**
+     * Définit le délai de synchronisation audio/vidéo
+     * @param delayMs Délai en millisecondes (négatif = audio en avance, positif = audio en retard)
+     */
+    public void setAudioVideoSyncDelay(final int delayMs) {
+        AudioVideoSyncHelper.setAudioVideoSyncDelay(context, delayMs);
+        
+        // Redémarrer la lecture avec le nouveau délai si nécessaire
+        if (!exoPlayerIsNull() && isPlaying()) {
+            saveStreamProgressState();
+            setRecovery();
+            reloadPlayQueueManager();
+        }
+    }
+
+    /**
+     * Récupère le délai de synchronisation audio/vidéo actuel
+     * @return Délai en millisecondes
+     */
+    public int getAudioVideoSyncDelay() {
+        return AudioVideoSyncHelper.getAudioVideoSyncDelay(context);
     }
 
 

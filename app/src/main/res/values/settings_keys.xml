@@ -1492,6 +1492,32 @@
     <string name="media_tunneling_device_blacklist_version">media_tunneling_device_blacklist_version</string>
     <string name="use_exoplayer_decoder_fallback_key">use_exoplayer_decoder_fallback_key</string>
     <string name="always_use_exoplayer_set_output_surface_workaround_key">always_use_exoplayer_set_output_surface_workaround_key</string>
+    <string name="audio_video_sync_delay_key">audio_video_sync_delay_key</string>
+    <string name="audio_video_sync_delay_default_value">0</string>
+    <string-array name="audio_video_sync_delay_descriptions">
+        <item>-500 ms</item>
+        <item>-250 ms</item>
+        <item>-100 ms</item>
+        <item>-50 ms</item>
+        <item>0 ms (disabled)</item>
+        <item>+50 ms</item>
+        <item>+100 ms</item>
+        <item>+250 ms</item>
+        <item>+500 ms</item>
+        <item>Custom...</item>
+    </string-array>
+    <string-array name="audio_video_sync_delay_values">
+        <item>-500</item>
+        <item>-250</item>
+        <item>-100</item>
+        <item>-50</item>
+        <item>0</item>
+        <item>50</item>
+        <item>100</item>
+        <item>250</item>
+        <item>500</item>
+        <item>custom</item>
+    </string-array>
 
     <!-- Image quality -->
     <string name="image_quality_key">image_quality_key</string>

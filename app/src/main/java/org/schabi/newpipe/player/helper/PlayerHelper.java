@@ -464,6 +464,15 @@ public final class PlayerHelper {
                 player.getContext().getString(R.string.seek_duration_default_value))));
     }
 
+    /**
+     * Récupère le délai de synchronisation audio/vidéo depuis les préférences
+     * @param player Le player NewPipe
+     * @return Le délai en millisecondes (négatif = audio en avance, positif = audio en retard)
+     */
+    public static int retrieveAudioVideoSyncDelayFromPreferences(final Player player) {
+        return AudioVideoSyncHelper.getAudioVideoSyncDelay(player.getContext());
+    }
+
     // endregion
     // region Format
 
