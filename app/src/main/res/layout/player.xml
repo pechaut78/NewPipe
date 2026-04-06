@@ -444,6 +444,44 @@
 
             </LinearLayout>
 
+            <!-- Video Carousel for navigation between videos -->
+            <RelativeLayout
+                android:id="@+id/videoCarouselContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/bottomControls"
+                android:layout_marginBottom="16dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/videoCarouselRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal"
+                    android:scrollbars="none"
+                    tools:listitem="@layout/video_carousel_item" />
+
+                <!-- Gradient overlays for transparency effect -->
+                <View
+                    android:id="@+id/carouselLeftGradient"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:background="@drawable/carousel_left_gradient" />
+
+                <View
+                    android:id="@+id/carouselRightGradient"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/carousel_right_gradient" />
+
+            </RelativeLayout>
+
             <LinearLayout
                 android:id="@+id/bottomControls"
                 android:layout_width="match_parent"

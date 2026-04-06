@@ -68,6 +68,7 @@ import org.schabi.newpipe.player.playqueue.PlayQueueItem;
 import org.schabi.newpipe.player.playqueue.PlayQueueItemBuilder;
 import org.schabi.newpipe.player.playqueue.PlayQueueItemHolder;
 import org.schabi.newpipe.player.playqueue.PlayQueueItemTouchCallback;
+import org.schabi.newpipe.player.ui.carousel.VideoCarouselController;
 import org.schabi.newpipe.util.DeviceUtils;
 import org.schabi.newpipe.util.NavigationHelper;
 import org.schabi.newpipe.util.external_communication.KoreUtils;
@@ -95,6 +96,7 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
 
     private PlayQueueAdapter playQueueAdapter;
     private StreamSegmentAdapter segmentAdapter;
+    private VideoCarouselController videoCarouselController;
     private boolean isQueueVisible = false;
     private boolean areSegmentsVisible = false;
 
@@ -267,6 +269,9 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
         // restore last resize mode
         setResizeMode(PlayerHelper.retrieveResizeModeFromPrefs(player));
         binding.getRoot().setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        
+        // Initialize video carousel
+        videoCarouselController = new VideoCarouselController(player, binding.getRoot());
     }
 
     @Override
@@ -589,6 +594,12 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
     public void onMetadataChanged(@NonNull final StreamInfo info) {
         super.onMetadataChanged(info);
         showHideKodiButton();
+        
+        // Update video carousel when video changes
+        if (videoCarouselController != null) {
+            videoCarouselController.updateCarousel();
+        }
+        
         if (areSegmentsVisible) {
             if (segmentAdapter.setItems(info)) {
                 final int adapterPosition = getNearestStreamSegmentPosition(
@@ -605,6 +616,11 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
     public void onPlayQueueEdited() {
         super.onPlayQueueEdited();
         showOrHideButtons();
+        
+        // Update video carousel when queue changes
+        if (videoCarouselController != null) {
+            videoCarouselController.updateCarousel();
+        }
     }
 
     private void onQueueClicked() {

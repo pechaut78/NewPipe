@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="100dp"
+    android:layout_height="80dp"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
+    android:background="@drawable/video_carousel_item_background">
+
+    <ImageView
+        android:id="@+id/itemThumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:scaleType="centerCrop"
+        android:background="@drawable/placeholder_thumbnail_video"
+        tools:src="@drawable/placeholder_thumbnail_video" />
+
+    <!-- Current video indicator border -->
+    <View
+        android:id="@+id/currentVideoIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/current_video_indicator_border"
+        android:visibility="gone" />
+
+    <!-- Video duration overlay -->
+    <TextView
+        android:id="@+id/itemDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/itemThumbnail"
+        android:layout_alignBottom="@id/itemThumbnail"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/duration_background"
+        android:paddingStart="4dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="2dp"
+        android:textColor="@android:color/white"
+        android:textSize="10sp"
+        android:visibility="gone"
+        tools:text="12:34"
+        tools:visibility="visible" />
+
+    <!-- Video title (optional, for debugging) -->
+    <TextView
+        android:id="@+id/itemTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/itemThumbnail"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@android:color/white"
+        android:textSize="8sp"
+        android:visibility="gone"
+        tools:text="Video Title"
+        tools:visibility="visible" />
+
+</RelativeLayout>
