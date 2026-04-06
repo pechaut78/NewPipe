@@ -305,6 +305,11 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
         binding.repeatButtonFullscreen.setVisibility(isFullscreen ? View.VISIBLE : View.GONE);
         binding.shuffleButtonFullscreen.setVisibility(isFullscreen ? View.VISIBLE : View.GONE);
 
+        // Update video carousel
+        if (videoCarouselController != null) {
+            videoCarouselController.updateCarousel();
+        }
+
         // Reset workaround changes from popup player
         binding.audioTrackTextView.setMaxWidth(Integer.MAX_VALUE);
     }

@@ -57,19 +57,16 @@ public class VideoCarouselController {
         PlayQueue playQueue = player.getPlayQueue();
         int currentIndex = playQueue.getIndex();
         
-        // Only show carousel if we have multiple items or history
-        if (playQueue.size() <= 1 && getHistorySize() == 0) {
-            hideCarousel();
-            return;
-        }
+        // Show carousel for demo/testing purposes - even with single video
+        // TODO: Later, uncomment this condition to only show with multiple videos
+        // if (playQueue.size() <= 1 && getHistorySize() == 0) {
+        //     hideCarousel();
+        //     return;
+        // }
         
         List<VideoCarouselItem> carouselItems = buildCarouselItems(playQueue, currentIndex);
         
-        if (carouselItems.isEmpty()) {
-            hideCarousel();
-            return;
-        }
-        
+        // Always try to show carousel for testing
         adapter.setItems(carouselItems);
         showCarousel();
         

@@ -453,7 +453,8 @@
                 android:layout_marginBottom="16dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:visibility="gone"
+                android:visibility="visible"
+                android:background="#33FF0000"
                 tools:visibility="visible">
 
                 <androidx.recyclerview.widget.RecyclerView
