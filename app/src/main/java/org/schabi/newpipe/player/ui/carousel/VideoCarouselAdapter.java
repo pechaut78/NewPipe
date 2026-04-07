@@ -1,5 +1,6 @@
 package org.schabi.newpipe.player.ui.carousel;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import java.util.List;
  */
 public class VideoCarouselAdapter extends RecyclerView.Adapter<VideoCarouselAdapter.CarouselViewHolder> {
     
+    private static final String TAG = "VideoCarouselAdapter";
     private List<VideoCarouselItem> items = new ArrayList<>();
     private OnItemClickListener onItemClickListener;
     
@@ -31,10 +33,12 @@ public class VideoCarouselAdapter extends RecyclerView.Adapter<VideoCarouselAdap
     
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.onItemClickListener = listener;
+        Log.d(TAG, "OnItemClickListener set: " + (listener != null ? "YES" : "NULL"));
     }
     
     public void setItems(List<VideoCarouselItem> items) {
         this.items = items != null ? items : new ArrayList<>();
+        Log.d(TAG, "Items set: " + this.items.size() + " items");
         notifyDataSetChanged();
     }
     
@@ -83,20 +87,24 @@ public class VideoCarouselAdapter extends RecyclerView.Adapter<VideoCarouselAdap
     class CarouselViewHolder extends RecyclerView.ViewHolder {
         private final ImageView thumbnailView;
         private final TextView durationView;
-        private final TextView titleView;
         private final View currentVideoIndicator;
         
         public CarouselViewHolder(@NonNull View itemView) {
             super(itemView);
             thumbnailView = itemView.findViewById(R.id.itemThumbnail);
             durationView = itemView.findViewById(R.id.itemDuration);
-            titleView = itemView.findViewById(R.id.itemTitle);
             currentVideoIndicator = itemView.findViewById(R.id.currentVideoIndicator);
             
-            itemView.setOnClickListener(v -> {
+            // Set click listener on the thumbnail for better ripple effect
+            thumbnailView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
+                Log.d(TAG, "Item clicked at adapter position: " + position + ", listener: " + (onItemClickListener != null ? "YES" : "NULL"));
                 if (position != RecyclerView.NO_POSITION && onItemClickListener != null) {
-                    onItemClickListener.onItemClick(items.get(position), position);
+                    VideoCarouselItem clickedItem = items.get(position);
+                    Log.d(TAG, "Calling onItemClick for item: " + clickedItem.getTitle());
+                    onItemClickListener.onItemClick(clickedItem, position);
+                } else {
+                    Log.w(TAG, "Click ignored - position: " + position + ", listener null: " + (onItemClickListener == null));
                 }
             });
         }
@@ -116,9 +124,6 @@ public class VideoCarouselAdapter extends RecyclerView.Adapter<VideoCarouselAdap
             } else {
                 durationView.setVisibility(View.GONE);
             }
-            
-            // Set title (usually invisible but useful for debugging)
-            titleView.setText(item.getTitle());
             
             // Show current video indicator
             currentVideoIndicator.setVisibility(item.isCurrentVideo() ? View.VISIBLE : View.GONE);

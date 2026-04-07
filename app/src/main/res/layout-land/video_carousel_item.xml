@@ -2,16 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="100dp"
-    android:layout_height="84dp"
-    android:layout_marginStart="4dp"
-    android:layout_marginEnd="4dp"
+    android:layout_width="110dp"
+    android:layout_height="76dp"
+    android:layout_marginStart="6dp"
+    android:layout_marginEnd="6dp"
     android:background="@android:color/transparent">
 
     <ImageView
         android:id="@+id/itemThumbnail"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="56dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="2dp"
         android:scaleType="centerCrop"
@@ -25,7 +25,7 @@
     <View
         android:id="@+id/currentVideoIndicator"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="56dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="2dp"
         android:background="@drawable/current_video_indicator_border"
@@ -38,27 +38,18 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@id/itemThumbnail"
         android:layout_alignBottom="@id/itemThumbnail"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="6dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/duration_background"
-        android:paddingStart="4dp"
-        android:paddingTop="2dp"
-        android:paddingEnd="4dp"
-        android:paddingBottom="2dp"
+        android:paddingStart="3dp"
+        android:paddingTop="1dp"
+        android:paddingEnd="3dp"
+        android:paddingBottom="1dp"
         android:textColor="@android:color/white"
-        android:textSize="10sp"
+        android:textSize="9sp"
         android:visibility="gone"
         tools:text="12:34"
         tools:visibility="visible" />
 
-    <!-- Ripple overlay for touch feedback -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="2dp"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true" />
 
 </RelativeLayout>

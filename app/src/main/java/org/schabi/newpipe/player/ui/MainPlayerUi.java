@@ -167,6 +167,10 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
                 toggleFullscreen();
             }
         }));
+        
+        binding.minimizeButton.setOnClickListener(makeOnClickListener(() -> {
+            toggleFullscreen();
+        }));
         binding.queueButton.setOnClickListener(v -> onQueueClicked());
         binding.segmentsButton.setOnClickListener(v -> onSegmentsClicked());
 
@@ -179,6 +183,7 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
             @Override
             public void onChange(final boolean selfChange) {
                 setupScreenRotationButton();
+                setupMinimizeButton();
             }
         };
         context.getContentResolver().registerContentObserver(
@@ -282,6 +287,7 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
         showHideKodiButton();
         binding.fullScreenButton.setVisibility(View.GONE);
         setupScreenRotationButton();
+        setupMinimizeButton();
         binding.resizeTextView.setVisibility(View.VISIBLE);
         binding.getRoot().findViewById(R.id.metadataView).setVisibility(View.VISIBLE);
         binding.moreOptionsButton.setVisibility(View.VISIBLE);
@@ -915,6 +921,12 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
                 isFullscreen ? R.drawable.ic_fullscreen_exit
                         : R.drawable.ic_fullscreen));
     }
+    
+    private void setupMinimizeButton() {
+        // Show minimize button only in fullscreen and landscape mode
+        binding.minimizeButton.setVisibility(isFullscreen && isLandscape() 
+                ? View.VISIBLE : View.GONE);
+    }
 
     @Override
     public void onVideoSizeChanged(@NonNull final VideoSize videoSize) {
@@ -932,6 +944,7 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
         }
 
         setupScreenRotationButton();
+        setupMinimizeButton();
     }
 
     public void toggleFullscreen() {
@@ -965,6 +978,7 @@ public final class MainPlayerUi extends VideoPlayerUi implements View.OnLayoutCh
         binding.shuffleButtonFullscreen.setVisibility(isFullscreen ? View.VISIBLE : View.GONE);
         
         setupScreenRotationButton();
+        setupMinimizeButton();
     }
 
     public void checkLandscape() {

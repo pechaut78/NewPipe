@@ -1,15 +1,22 @@
 package org.schabi.newpipe.player.ui.carousel;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.schabi.newpipe.R;
+import org.schabi.newpipe.extractor.InfoItem;
+import org.schabi.newpipe.extractor.ListExtractor;
+import org.schabi.newpipe.extractor.stream.StreamInfo;
+import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.player.Player;
 import org.schabi.newpipe.player.playqueue.PlayQueue;
 import org.schabi.newpipe.player.playqueue.PlayQueueItem;
+import org.schabi.newpipe.player.playqueue.SinglePlayQueue;
+import org.schabi.newpipe.util.NavigationHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +27,7 @@ import java.util.List;
  */
 public class VideoCarouselController {
     
+    private static final String TAG = "VideoCarouselController";
     private static final int MAX_HISTORY_ITEMS = 5;
     private static final int MAX_UPCOMING_ITEMS = 10;
     
@@ -43,6 +51,28 @@ public class VideoCarouselController {
         
         // Set click listener
         adapter.setOnItemClickListener(this::onCarouselItemClicked);
+        
+        Log.d(TAG, "VideoCarouselController initialized with adapter: " + adapter);
+        
+        // Add touch listener to maintain controls visibility during scroll
+        carouselRecyclerView.setOnTouchListener((v, event) -> {
+            Log.d(TAG, "Touch event on carousel: " + event.getAction());
+            maintainControlsVisibility();
+            return false; // Let RecyclerView handle the touch event
+        });
+        
+        // Add scroll listener to maintain controls visibility during scroll
+        carouselRecyclerView.addOnScrollListener(new androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(androidx.recyclerview.widget.RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING ||
+                    newState == androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_SETTLING) {
+                    Log.d(TAG, "Carousel scrolling, maintaining controls visibility");
+                    maintainControlsVisibility();
+                }
+            }
+        });
     }
     
     /**
@@ -80,6 +110,11 @@ public class VideoCarouselController {
     private List<VideoCarouselItem> buildCarouselItems(PlayQueue playQueue, int currentIndex) {
         List<VideoCarouselItem> items = new ArrayList<>();
         
+        // If there's only one video in the queue, use related items from "nouveautés"
+        if (playQueue.size() == 1) {
+            return buildCarouselFromRelatedItems(currentIndex);
+        }
+        
         // Add recent history items (to the left)
         List<VideoCarouselItem> historyItems = getHistoryItems();
         items.addAll(historyItems);
@@ -99,6 +134,68 @@ public class VideoCarouselController {
                     isCurrent, 
                     i);
                 items.add(carouselItem);
+            }
+        }
+        
+        return items;
+    }
+    
+    /**
+     * Build carousel items using related videos when only one video is in the queue
+     */
+    private List<VideoCarouselItem> buildCarouselFromRelatedItems(int currentIndex) {
+        List<VideoCarouselItem> items = new ArrayList<>();
+        
+        // Get current stream info to access related items
+        if (player != null && player.getCurrentStreamInfo().isPresent()) {
+            StreamInfo currentStreamInfo = player.getCurrentStreamInfo().get();
+            
+            // Get related items (these are the "nouveautés" or trending videos)
+            List<InfoItem> relatedItems = currentStreamInfo.getRelatedItems();
+            if (relatedItems != null && !relatedItems.isEmpty()) {
+                
+                List<StreamInfoItem> streamItems = relatedItems.stream()
+                    .filter(item -> item instanceof StreamInfoItem)
+                    .map(item -> (StreamInfoItem) item)
+                    .collect(java.util.stream.Collectors.toList());
+                
+                // Add videos before current video (left side of carousel) 
+                int maxBefore = Math.min(3, streamItems.size() / 2);
+                for (int i = 0; i < maxBefore; i++) {
+                    StreamInfoItem streamItem = streamItems.get(i);
+                    VideoCarouselItem carouselItem = new VideoCarouselItem(
+                        streamItem, // Pass the StreamInfoItem directly
+                        false, // Not current video
+                        -1 // Related video, not in queue
+                    );
+                    items.add(carouselItem);
+                }
+                
+                // Add current video in the center
+                PlayQueueItem currentQueueItem = player.getPlayQueue().getItem(currentIndex);
+                if (currentQueueItem != null) {
+                    VideoCarouselItem currentItem = new VideoCarouselItem(
+                        currentQueueItem.getThumbnails(),
+                        currentQueueItem.getTitle(),
+                        currentQueueItem.getDuration(),
+                        true, // Current video
+                        currentIndex
+                    );
+                    items.add(currentItem);
+                }
+                
+                // Add videos after current video (right side of carousel)
+                int startAfter = maxBefore;
+                int maxAfter = Math.min(streamItems.size(), startAfter + 5);
+                for (int i = startAfter; i < maxAfter; i++) {
+                    StreamInfoItem streamItem = streamItems.get(i);
+                    VideoCarouselItem carouselItem = new VideoCarouselItem(
+                        streamItem, // Pass the StreamInfoItem directly
+                        false, // Not current video
+                        -1 // Related video, not in queue
+                    );
+                    items.add(carouselItem);
+                }
             }
         }
         
@@ -127,15 +224,62 @@ public class VideoCarouselController {
      * Handle click on carousel item
      */
     private void onCarouselItemClicked(VideoCarouselItem item, int adapterPosition) {
+        Log.d(TAG, "Carousel item clicked: " + item.getTitle() + ", position: " + item.getPosition());
+        
         if (player == null || player.getPlayQueue() == null) {
+            Log.w(TAG, "Player or PlayQueue is null, cannot handle click");
             return;
         }
         
+        // Maintain UI visibility during interaction
+        maintainControlsVisibility();
+        
         // If it's a queue item, jump to that position
         if (item.getPosition() >= 0 && item.getPosition() < player.getPlayQueue().size()) {
+            Log.d(TAG, "Playing queue item at position: " + item.getPosition());
             player.selectQueueItem(player.getPlayQueue().getItem(item.getPosition()));
+        } else if (item.getPosition() == -1) {
+            // Handle related video click (position -1 means it's a related video, not from queue)
+            Log.d(TAG, "Playing related video: " + item.getTitle());
+            
+            // Create a new SinglePlayQueue with the clicked video
+            StreamInfoItem streamInfoItem = item.getStreamInfoItem();
+            if (streamInfoItem != null) {
+                try {
+                    SinglePlayQueue newQueue = new SinglePlayQueue(streamInfoItem);
+                    // Use NavigationHelper to play the video
+                    NavigationHelper.playOnMainPlayer(player.getContext(), newQueue, false);
+                    Log.d(TAG, "Successfully started playing related video");
+                } catch (Exception e) {
+                    Log.e(TAG, "Error playing related video", e);
+                }
+            } else {
+                Log.e(TAG, "StreamInfoItem is null for related video");
+            }
         }
-        // TODO: Handle history items (would need to add them to queue and play)
+        // TODO: Handle history items (would need to add them to queue and play)  
+    }
+    
+    /**
+     * Maintain UI controls visibility during carousel interaction
+     */
+    private void maintainControlsVisibility() {
+        if (player != null && player.UIs() != null) {
+            Log.d(TAG, "Maintaining controls visibility");
+            // Call showControls on MainPlayerUi to reset the auto-hide timer
+            player.UIs().call(ui -> {
+                if (ui instanceof org.schabi.newpipe.player.ui.MainPlayerUi) {
+                    // MainPlayerUi hérite de VideoPlayerUi, donc elle a showControls()
+                    org.schabi.newpipe.player.ui.MainPlayerUi mainUi = 
+                        (org.schabi.newpipe.player.ui.MainPlayerUi) ui;
+                    // Utilisation de la constante de durée standard
+                    mainUi.showControls(300L); // DEFAULT_CONTROLS_DURATION
+                    Log.d(TAG, "Called showControls on MainPlayerUi");
+                }
+            });
+        } else {
+            Log.w(TAG, "Cannot maintain controls visibility: player or UIs is null");
+        }
     }
     
     /**
@@ -170,7 +314,7 @@ public class VideoCarouselController {
     /**
      * Hide the carousel
      */
-    private void hideCarousel() {
+    public void hideCarousel() {
         if (carouselContainer != null) {
             carouselContainer.setVisibility(View.GONE);
         }

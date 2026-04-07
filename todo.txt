@@ -1,7 +1,12 @@
-Sous la commande play qui se trouve en surimpression sur la vidéo, on affiche un carrousel.
-Ce carrousel prend une bonne partie de la largeur de la vidéo et se redimenssionne avec la vidéo
-Il est presque transparent à gauche et à droite et pas du tout au centre.
-Au centre on a la vignette de la vidéo qui est en cours, encadrée, et en scrollant on peut déclencher la lecture d'une autre vidéo
+On veut créer un mécanisme qui permet d'afficher des animations bassées sur le son, et cacher la vidéo.
 
-Si on est en train de lire une liste: les miniatures à gauche du centre, sont les vidéos avant dans la liste, et celles à droite sont celles qui viennent ensuite dans la liste
-Si on est pas dans une liste, à gauche l'historique et à droite celle à venir (en tenant compte du shuffle si ce dernier est créé)
+Pour cela on proposera un système de plugin de rendu qui pourra s'afficher en lieux et place de la vidéo
+Le plugin propose tout le nécessaire en terme de data pour afficher un vumètre ou des bar d'équalizer, à chaque frame.
+Le calcul des données doit être très optimisé.
+
+On proposera un bouton sur l'interface "play, pause, next", en bas à droite, qui permet de basculer sur la vidéo ou sur le vumètre et réciproquement.
+
+On implémentera un vumètre comme ceci https://primesound.org/wp-content/uploads/2024/02/view_meter.png
+
+
+
